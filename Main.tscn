@@ -1,16 +1,67 @@
-[gd_scene load_steps=15 format=3 uid="uid://n1dbxval3i8"]
+[gd_scene load_steps=16 format=3 uid="uid://n1dbxval3i8"]
 
+[ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="2_uu6xs"]
 
 [sub_resource type="GDScript" id="GDScript_glv2v"]
 script/source = "extends Node2D
 
+@export var pet_menu_scene: PackedScene
+@onready var menu_container := $UI/MenuContainer
+@onready var pet := $Pet
+
+var menu_open = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 	get_tree().get_root().set_transparent_background(true)
+	pet.menu_requested.connect(show_pet_menu)
+	
+
+func show_pet_menu(pet_pos: Vector2):
+	# remove previous menu
+	for child in menu_container.get_children():
+		child.queue_free()
+
+	# instantiate menu
+	var menu = pet_menu_scene.instantiate()
+	menu_container.add_child(menu)
+
+	# position menu around pet
+	menu.position = pet_pos
+	menu_open = true
+
+	# connect buttons
+	menu.get_node(\"TalkButton\").pressed.connect(func():
+		on_talk()
+		close_menu()
+	)
+	menu.get_node(\"InteractButton\").pressed.connect(func():
+		on_interact()
+		close_menu()
+	)
+	menu.get_node(\"ScheduleButton\").pressed.connect(func():
+		on_schedule()
+		close_menu()
+	)
+
+func on_talk():
+	print(\"Talk clicked\")
+
+func on_interact():
+	print(\"Interact clicked\")
+
+func on_schedule():
+	print(\"Schedule clicked\")	
+
+func close_menu():
+	# remove menu
+	for child in menu_container.get_children():
+		child.queue_free()
+	menu_open = false
 "
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_glv2v"]
@@ -94,6 +145,7 @@ animations = [{
 
 [node name="Main" type="Node2D"]
 script = SubResource("GDScript_glv2v")
+pet_menu_scene = ExtResource("1_r0du0")
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(0, 1136)
@@ -121,6 +173,7 @@ speed_scale = 0.4
 [node name="PomodoroWindow" type="Window" parent="."]
 oversampling_override = 1.0
 title = "Pomodoro Timer"
+position = Vector2i(0, 36)
 size = Vector2i(300, 200)
 always_on_top = true
 
@@ -139,5 +192,13 @@ grow_vertical = 2
 text = "25:00"
 
 [node name="Timer" type="Timer" parent="PomodoroWindow"]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MenuContainer" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]
