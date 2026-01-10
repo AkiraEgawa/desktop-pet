@@ -1,12 +1,25 @@
-[gd_scene load_steps=0 format=3 uid="uid://q61xiym21pus"]
+[gd_scene load_steps=3 format=3 uid="uid://q61xiym21pus"]
 
-[node name="Node2D" type="Node2D"]
+[ext_resource type="Script" uid="uid://dx3xyeb1b2rm6" path="res://pomodoro_window.gd" id="1_m1vcf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1vcf"]`
+bg_color = Color(0.92235416, 0.90533066, 0.83649534, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="PomodoroWindow" type="Node2D"]
 
 [node name="PomodoroWindow" type="Window" parent="."]
+transparent_bg = true
 oversampling_override = 1.0
 title = "Pomodoro Timer"
 size = Vector2i(300, 200)
+borderless = true
 always_on_top = true
+transparent = true
+script = ExtResource("1_m1vcf")
 
 [node name="Label" type="Label" parent="PomodoroWindow"]
 anchors_preset = 8
@@ -23,3 +36,32 @@ grow_vertical = 2
 text = "25:00"
 
 [node name="Timer" type="Timer" parent="PomodoroWindow"]
+
+[node name="PanelContainer" type="PanelContainer" parent="PomodoroWindow"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1vcf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PomodoroWindow"]
+offset_right = 76.0
+
+[node name="StartButton" type="Button" parent="PomodoroWindow/HBoxContainer"]
+layout_mode = 2
+
+[node name="ResetButton" type="Button" parent="PomodoroWindow/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PomodoroWindow"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="WindowTitleText" type="Label" parent="PomodoroWindow/VBoxContainer"]
+layout_mode = 2
+text = "Focus"
+
+[node name="XButton" type="Button" parent="PomodoroWindow/VBoxContainer"]
+layout_mode = 2
+text = "X Button"
+
+[connection signal="gui_input" from="PomodoroWindow/PanelContainer" to="PomodoroWindow" method="_on_panel_container_gui_input"]
+[connection signal="pressed" from="PomodoroWindow/VBoxContainer/XButton" to="PomodoroWindow" method="_on_x_button_pressed"]
