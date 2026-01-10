@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://nvem4airnve7"]
+
+[ext_resource type="Script" uid="uid://0lfvcrb2oaep" path="res://ChatManager.gd" id="1_mgfuv"]
+[ext_resource type="Texture2D" uid="uid://cs5mwf3m6l5hx" path="res://icon.svg" id="2_w6xaa"]
+
+[node name="ChatManager" type="Node2D"]
+script = ExtResource("1_mgfuv")
+gemini_api_key = "AIzaSyDOQOAqbpLejik_kwtZx-Fqc52IxYd5Yvo"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="ChatPanel" type="Window" parent="."]
+oversampling_override = 1.0
+size = Vector2i(300, 200)
+
+[node name="UserInput" type="LineEdit" parent="ChatPanel"]
+offset_right = 68.5625
+offset_bottom = 31.0
+
+[node name="SendButton" type="Button" parent="ChatPanel"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="ChatPanel/SendButton"]
+texture = ExtResource("2_w6xaa")
+
+[node name="ChatLog" type="RichTextLabel" parent="ChatPanel"]
+offset_right = 40.0
+offset_bottom = 40.0

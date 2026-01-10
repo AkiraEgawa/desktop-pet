@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://n1dbxval3i8"]
+[gd_scene load_steps=17 format=3 uid="uid://n1dbxval3i8"]
 
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="2_uu6xs"]
+[ext_resource type="PackedScene" uid="uid://nvem4airnve7" path="res://ChatManager.tscn" id="4_cm0pq"]
 
 [sub_resource type="GDScript" id="GDScript_glv2v"]
 script/source = "extends Node2D
@@ -10,6 +11,8 @@ script/source = "extends Node2D
 @export var pet_menu_scene: PackedScene
 @onready var menu_container := $UI/MenuContainer
 @onready var pet := $Pet
+@export var chat_manager_scene: PackedScene
+var chat_manager: ChatManager
 
 var menu_open = false
 
@@ -19,6 +22,9 @@ func _ready():
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 	get_tree().get_root().set_transparent_background(true)
 	pet.menu_requested.connect(show_pet_menu)
+	# instantiate ChatManager scene
+	chat_manager = chat_manager_scene.instantiate() as ChatManager  # chat_manager_scene is a PackedScene
+	add_child(chat_manager)
 	
 
 func show_pet_menu(pet_pos: Vector2):
@@ -48,8 +54,15 @@ func show_pet_menu(pet_pos: Vector2):
 		close_menu()
 	)
 
+
+
 func on_talk():
-	print(\"Talk clicked\")
+	if chat_manager:
+		chat_manager.open_chat()
+		# You can optionally set a screen position here if you want it somewhere specific
+		chat_manager.chat_panel.position = Vector2(400, 300)  # Center-ish
+	else:
+		print(\"No chat_manager\")
 
 func on_interact():
 	print(\"Interact clicked\")
@@ -146,6 +159,7 @@ animations = [{
 [node name="Main" type="Node2D"]
 script = SubResource("GDScript_glv2v")
 pet_menu_scene = ExtResource("1_r0du0")
+chat_manager_scene = ExtResource("4_cm0pq")
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(0, 1136)
@@ -170,35 +184,19 @@ sprite_frames = SubResource("SpriteFrames_wkp8b")
 animation = &"fall"
 speed_scale = 0.4
 
-[node name="PomodoroWindow" type="Window" parent="."]
-oversampling_override = 1.0
-title = "Pomodoro Timer"
-position = Vector2i(0, 36)
-size = Vector2i(300, 200)
-always_on_top = true
-
-[node name="Label" type="Label" parent="PomodoroWindow"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.5
-offset_top = -11.5
-offset_right = 20.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "25:00"
-
-[node name="Timer" type="Timer" parent="PomodoroWindow"]
-
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 2
 
 [node name="MenuContainer" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="ChatManager" parent="." instance=ExtResource("4_cm0pq")]
+
+light_mask = 2
+visibility_layer = 2
+gemini_api_key = null
 
 [connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]
