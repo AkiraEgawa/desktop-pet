@@ -4,6 +4,7 @@
 
 [node name="ChatManager" type="Node2D"]
 script = ExtResource("1_mgfuv")
+gemini_api_key = null
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
