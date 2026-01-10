@@ -169,21 +169,22 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 				pomodoro_instance.start_pomodoro()
 
 func update_click_mask():
+	# Only mask around the pet
 	var current_scale = anim.scale
-	# Your sprite size
 	var base_size = Vector2(48, 48)
-	var effective_size = base_size * current_scale
-	# Add a "Buffer" of 20 pixels so we don't accidentally cut off the ears/tail
-	var buffer = 20.0 
-	# Recalculate size with buffer
-	var buffered_size = effective_size + Vector2(buffer, buffer)
-	var half_size = buffered_size / 2
-	# Calculate corners
-	var top_left = global_position - half_size 
-	var top_right = global_position + Vector2(half_size.x, -half_size.y)
-	var bottom_left = global_position + Vector2(-half_size.x, half_size.y)
+	var buffer = 20.0
+	var half_size = (base_size * current_scale + Vector2(buffer, buffer)) / 2
+
+	var top_left = global_position - half_size
 	var bottom_right = global_position + half_size
-	
-	var corners = PackedVector2Array([top_left, top_right, bottom_right, bottom_left])
-	
+
+	# Define corners in clockwise order
+	var corners = PackedVector2Array([
+		top_left,
+		Vector2(bottom_right.x, top_left.y),
+		bottom_right,
+		Vector2(top_left.x, bottom_right.y)
+	])
+
+	# Set the window mask for only the pet area
 	DisplayServer.window_set_mouse_passthrough(corners)

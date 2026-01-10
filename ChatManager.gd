@@ -6,7 +6,7 @@ class_name ChatManager
 
 # Nodes will be assigned safely in _ready()
 var http_request: HTTPRequest
-var chat_panel: Panel
+var chat_panel: Window
 var user_input: LineEdit
 var chat_log: RichTextLabel
 var send_button: Button
@@ -23,7 +23,8 @@ func _ready():
 
 	# Hide chat panel
 	if chat_panel:
-		chat_panel.visible = false
+		chat_panel.popup_centered()
+		chat_panel.hide()
 	else:
 		push_error("ChatPanel missing!")
 
@@ -43,9 +44,8 @@ func _ready():
 
 # Called by Main.gd when Talk button is pressed
 func open_chat():
-	if chat_panel:
-		print("Opening chat panel")
-		chat_panel.visible = true
+	if chat_panel: 
+		chat_panel.popup()  # instead of visible = true
 		user_input.text = ""
 		user_input.grab_focus()
 	else:
