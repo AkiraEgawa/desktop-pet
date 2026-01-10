@@ -43,10 +43,14 @@ func _ready():
 
 # Called by Main.gd when Talk button is pressed
 func open_chat():
-	if chat_panel and user_input:
+	if chat_panel:
+		print("Opening chat panel")
 		chat_panel.visible = true
 		user_input.text = ""
 		user_input.grab_focus()
+	else:
+		print("Cannot open chat: chat_panel is null")
+
 
 # Send user input to Gemini
 func _on_send_pressed():
