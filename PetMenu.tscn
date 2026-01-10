@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dm7b51pbx07u5"]
+[gd_scene load_steps=3 format=3 uid="uid://dm7b51pbx07u5"]
 
 [ext_resource type="Script" uid="uid://clny8kurfcob4" path="res://PetMenu.gd" id="1_jjrm6"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jjrm6"]
+size = Vector2(20, 20)
 
 [node name="PetMenu" type="Control"]
 layout_mode = 3
@@ -12,6 +15,9 @@ layout_mode = 0
 offset_top = -60.0
 offset_right = 8.0
 offset_bottom = -52.0
+
+[node name="Sprite2D" type="Sprite2D" parent="TalkButton"]
+texture = SubResource("PlaceholderTexture2D_jjrm6")
 
 [node name="InteractButton" type="Button" parent="."]
 layout_mode = 0

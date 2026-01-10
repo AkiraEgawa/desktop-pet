@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dx3xyeb1b2rm6" path="res://pomodoro_window.gd" id="1_m1vcf"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1vcf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1vcf"]`
 bg_color = Color(0.92235416, 0.90533066, 0.83649534, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8

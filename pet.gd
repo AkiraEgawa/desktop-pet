@@ -4,6 +4,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 # Use DisplayServer here to get the full USABLE screen size dynamically
 @onready var screen_size = DisplayServer.screen_get_usable_rect().size
 @onready var anim = $AnimatedSprite2D
+signal menu_requested(global_position)
 
 var speed = 200 # Controls how fast PET walks
 var direction = 1 # Controls LEFT and RIGHT directions
@@ -17,6 +18,10 @@ enum PetState {
 }
 var current_state: PetState = PetState.IDLE # Initial pet state
 var time_left = 5.0 						# Duration before we change states
+
+func _input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		emit_signal("menu_requested", global_position)
 
 # Executes once when the node and all its children enter the scene tree
 func _ready():
