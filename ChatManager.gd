@@ -1,10 +1,9 @@
 extends Node
-
 class_name ChatManager
 
-@export var gemini_api_key: String
+@export var gemini_api_key: String 
 
-# Nodes will be assigned safely in _ready()
+# Nodes
 var http_request: HTTPRequest
 var chat_panel: Window
 var user_input: LineEdit
@@ -21,54 +20,31 @@ func _ready():
 	chat_log = get_node_or_null("ChatPanel/ChatLog")
 	send_button = get_node_or_null("ChatPanel/SendButton")
 
-	# Hide chat panel
-	if chat_panel:
-		chat_panel.popup_centered()
-		chat_panel.hide()
-	else:
+	if not chat_panel:
 		push_error("ChatPanel missing!")
+		return
+	chat_panel.hide() # hide at start
 
-	# Connect SendButton pressed signal
-	if send_button and has_method("_on_send_pressed"):
+	# Connect button pressed
+	if send_button:
 		send_button.pressed.connect(Callable(self, "_on_send_pressed"))
 	else:
-		push_error("SendButton missing or _on_send_pressed not found!")
+		push_error("SendButton missing!")
 
-	# Connect HTTPRequest completed signal
-	if http_request and has_method("_on_request_completed"):
-		if not http_request.is_connected("request_completed", Callable(self, "_on_request_completed")):
-			http_request.request_completed.connect(Callable(self, "_on_request_completed"))
+	# Connect Enter key
+	# Connect Enter key
+	if user_input:
+		user_input.text_submitted.connect(Callable(self, "_on_send_pressed"))
 	else:
-		push_error("HTTPRequest missing or _on_request_completed not found!")
+		push_error("UserInput LineEdit missing!")
+	
 
 
-# Called by Main.gd when Talk button is pressed
-func open_chat():
-	if chat_panel: 
-		chat_panel.popup()  # instead of visible = true
-		user_input.text = ""
-		user_input.grab_focus()
+	# Connect HTTPRequest signal
+	if http_request:
+		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
 	else:
-		print("Cannot open chat: chat_panel is null")
-
-
-# Send user input to Gemini
-func _on_send_pressed():
-	if not user_input:
-		return
-
-	var prompt = user_input.text.strip_edges()
-	if prompt == "":
-		return
-
-	ask_gemini(prompt)
-
-	# Show user message in chat log
-	if chat_log:
-		chat_log.append_bbcode("[color=cyan]You:[/color] %s\n" % prompt)
-
-	# Clear input
-	user_input.text = ""
+		push_error("HTTPRequest missing!")
 
 # Gemini API request
 func ask_gemini(prompt: String) -> void:
@@ -92,13 +68,50 @@ func ask_gemini(prompt: String) -> void:
 		"max_output_tokens": 256
 	}
 
-	var json_body_bytes = JSON.stringify(body).to_utf8_buffer()
-	var err = http_request.request(url, headers, json_body_bytes)
+	var json_body_str = JSON.stringify(body)  # Godot 4.5 HTTPRequest expects String body
+	var err = http_request.request(
+		url,
+		headers,
+		HTTPClient.METHOD_POST,
+		json_body_str
+	)
+
 	if err != OK:
 		push_error("Failed to send HTTP request: %d" % err)
 
-# HTTPRequest callback
-func _on_request_completed(result: int, response_code: int, headers: Array, body: PackedByteArray) -> void:
+
+# Called by Main.gd when "Talk" button is pressed
+func open_chat():
+	if chat_panel and user_input:
+		chat_panel.popup_centered()
+		user_input.text = ""
+		user_input.grab_focus()
+		print("Opening chat panel")
+	else:
+		print("Cannot open chat: chat_panel or user_input is null")
+
+func _on_send_pressed(submitted_text: String = ""):
+	var prompt = submitted_text.strip_edges()
+	if prompt == "":
+		return
+
+	ask_gemini(prompt)
+
+	# Show user message in chat log
+	if chat_log:
+		chat_log.append_text("[You]: %s\n" % prompt)  # append_text works in Godot 4.5
+
+	# Clear input
+	if user_input:
+		user_input.text = ""
+
+
+# Callback when proxy responds
+func _on_request_completed(result: int, response_code: int, headers: Array, body: PackedByteArray):
+	if result != OK or response_code != 200:
+		push_error("HTTP request failed: %d, code %d" % [result, response_code])
+		return
+
 	if not chat_log:
 		push_error("ChatLog missing!")
 		return
@@ -113,6 +126,6 @@ func _on_request_completed(result: int, response_code: int, headers: Array, body
 	if data.has("candidates") and data.candidates.size() > 0:
 		var ai_text = data.candidates[0].content
 		emit_signal("ai_response", ai_text)
-		chat_log.append_bbcode("[color=yellow]Pet:[/color] %s\n" % ai_text)
+		chat_log.append_text("[Pet]: %s\n" % ai_text)
 	else:
 		push_error("Unexpected API response format")
