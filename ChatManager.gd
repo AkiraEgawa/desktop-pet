@@ -1,7 +1,7 @@
 extends Node
 class_name ChatManager
 
-@export var gemini_api_key: String 
+@export var proxy_url: String = "http://127.0.0.1:3000/gemini"
 
 # Nodes
 var http_request: HTTPRequest
@@ -13,7 +13,7 @@ var send_button: Button
 signal ai_response(text: String)
 
 func _ready():
-	# Get nodes safely
+	# Get nodes
 	http_request = get_node_or_null("HTTPRequest")
 	chat_panel = get_node_or_null("ChatPanel")
 	user_input = get_node_or_null("ChatPanel/UserInput")
@@ -23,64 +23,27 @@ func _ready():
 	if not chat_panel:
 		push_error("ChatPanel missing!")
 		return
-	chat_panel.hide() # hide at start
+	chat_panel.hide()
 
-	# Connect button pressed
+	# Connect send button
 	if send_button:
 		send_button.pressed.connect(Callable(self, "_on_send_pressed"))
 	else:
 		push_error("SendButton missing!")
 
 	# Connect Enter key
-	# Connect Enter key
 	if user_input:
 		user_input.text_submitted.connect(Callable(self, "_on_send_pressed"))
 	else:
 		push_error("UserInput LineEdit missing!")
-	
 
-
-	# Connect HTTPRequest signal
+	# Connect HTTPRequest
 	if http_request:
 		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
 	else:
 		push_error("HTTPRequest missing!")
 
-# Gemini API request
-func ask_gemini(prompt: String) -> void:
-	if gemini_api_key == "":
-		push_error("Gemini API key not set!")
-		return
-	if not http_request:
-		push_error("HTTPRequest node missing!")
-		return
-
-	var url = "https://api.generativeai.googleapis.com/v1beta2/models/gemini-2.0:generateText"
-	var headers = [
-		"Authorization: Bearer %s" % gemini_api_key,
-		"Content-Type: application/json"
-	]
-
-	var body = {
-		"prompt": prompt,
-		"temperature": 0.8,
-		"candidate_count": 1,
-		"max_output_tokens": 256
-	}
-
-	var json_body_str = JSON.stringify(body)  # Godot 4.5 HTTPRequest expects String body
-	var err = http_request.request(
-		url,
-		headers,
-		HTTPClient.METHOD_POST,
-		json_body_str
-	)
-
-	if err != OK:
-		push_error("Failed to send HTTP request: %d" % err)
-
-
-# Called by Main.gd when "Talk" button is pressed
+# Open chat panel
 func open_chat():
 	if chat_panel and user_input:
 		chat_panel.popup_centered()
@@ -90,21 +53,42 @@ func open_chat():
 	else:
 		print("Cannot open chat: chat_panel or user_input is null")
 
+# Called on SendButton press or Enter key
 func _on_send_pressed(submitted_text: String = ""):
 	var prompt = submitted_text.strip_edges()
+	if prompt == "" and user_input:
+		prompt = user_input.text.strip_edges()
 	if prompt == "":
 		return
 
-	ask_gemini(prompt)
+	send_prompt_to_proxy(prompt)
 
-	# Show user message in chat log
+	# Show user message
 	if chat_log:
-		chat_log.append_text("[You]: %s\n" % prompt)  # append_text works in Godot 4.5
+		chat_log.append_text("[You]: %s\n" % prompt)
 
 	# Clear input
 	if user_input:
 		user_input.text = ""
 
+# Send prompt to Node.js proxy
+func send_prompt_to_proxy(prompt: String) -> void:
+	if not http_request:
+		push_error("HTTPRequest node missing!")
+		return
+
+	var json_body = {"prompt": prompt}
+	var body_str = JSON.stringify(json_body)
+
+	var err = http_request.request(
+		proxy_url,
+		[],                     # headers can be empty
+		HTTPClient.METHOD_POST,
+		body_str
+	)
+
+	if err != OK:
+		push_error("Failed to send HTTP request: %d" % err)
 
 # Callback when proxy responds
 func _on_request_completed(result: int, response_code: int, headers: Array, body: PackedByteArray):
