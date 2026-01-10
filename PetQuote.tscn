@@ -1,0 +1,159 @@
+[gd_scene load_steps=15 format=3 uid="uid://clqutqc0mte6e"]
+
+[ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="2_eiy3p"]
+[ext_resource type="Script" uid="uid://wt7a7pr1l7vb" path="res://PetQuote.gd" id="2_gqrrh"]
+[ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="3_yohrq"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_glv2v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
+size = Vector2(115, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_03owx"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uu6xs"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0du0"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cm0pq"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fos0i"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(0, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3dxm6"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lgr22"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(96, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trn2v"]
+atlas = ExtResource("3_yohrq")
+region = Rect2(144, 48, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wkp8b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_03owx")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uu6xs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0du0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cm0pq")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fos0i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3dxm6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lgr22")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trn2v")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="PetQuote" type="Node2D"]
+script = ExtResource("2_gqrrh")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(0, 1136)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("WorldBoundaryShape2D_glv2v")
+
+[node name="Pet" type="CharacterBody2D" parent="."]
+input_pickable = true
+script = ExtResource("2_eiy3p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pet"]
+position = Vector2(-2.5, 14)
+shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Pet"]
+texture_filter = 1
+texture_repeat = 1
+position = Vector2(-1, -10)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_wkp8b")
+animation = &"fall"
+speed_scale = 0.4
+
+[node name="QuoteTimer" type="Timer" parent="Pet"]
+wait_time = 4.0
+autostart = true
+
+[node name="PomodoroWindow" type="Window" parent="."]
+oversampling_override = 1.0
+title = "Pomodoro Timer"
+position = Vector2i(0, 36)
+size = Vector2i(300, 200)
+visible = false
+always_on_top = true
+
+[node name="Label" type="Label" parent="PomodoroWindow"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.5
+offset_top = -11.5
+offset_right = 20.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "25:00"
+
+[node name="Timer" type="Timer" parent="PomodoroWindow"]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MenuContainer" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SpeechLabel" type="Label" parent="UI"]
+custom_minimum_size = Vector2(260, 0)
+offset_left = -132.0
+offset_top = -190.0
+offset_right = 128.0
+offset_bottom = -162.0
+size_flags_vertical = 1
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]
