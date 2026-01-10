@@ -58,7 +58,9 @@ func show_pet_menu(pet_pos: Vector2):
 
 func on_talk():
 	if chat_manager:
-		chat_manager.open_chat()  # shows text input for user
+		chat_manager.open_chat()
+		# You can optionally set a screen position here if you want it somewhere specific
+		chat_manager.chat_panel.position = Vector2(400, 300)  # Center-ish
 	else:
 		print(\"No chat_manager\")
 
@@ -183,6 +185,7 @@ animation = &"fall"
 speed_scale = 0.4
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 2
 
 [node name="MenuContainer" type="Control" parent="UI"]
 layout_mode = 3
@@ -191,5 +194,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="ChatManager" parent="." instance=ExtResource("4_cm0pq")]
+
+light_mask = 2
+visibility_layer = 2
+gemini_api_key = null
 
 [connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]
