@@ -11,35 +11,25 @@ var chat_log: RichTextLabel
 signal ai_response(text: String)
 
 func _ready():
-	# Safe node lookups for dynamically instanced scene
-	http_request = get_node_or_null("HTTPRequest")
 	chat_panel = get_node_or_null("ChatPanel")
 	user_input = get_node_or_null("ChatPanel/UserInput")
 	chat_log = get_node_or_null("ChatPanel/ChatLog")
+	http_request = get_node_or_null("HTTPRequest")
 	var send_button = get_node_or_null("ChatPanel/SendButton")
-	
-	if not http_request:
-		push_error("HTTPRequest node not found!")
-	if not chat_panel:
-		push_error("ChatPanel node not found!")
-	if not user_input:
-		push_error("UserInput node not found!")
-	if not chat_log:
-		push_error("ChatLog node not found!")
-	if not send_button:
-		push_error("SendButton node not found!")
 
-	# Hide chat panel by default
 	if chat_panel:
 		chat_panel.visible = false
+	else:
+		push_error("ChatPanel missing!")
 
-	# Connect send button safely
 	if send_button:
-		send_button.pressed.connect(_on_send_pressed)
-	
-	# Connect HTTPRequest signal safely
-	if http_request and not http_request.is_connected("request_completed", self, "_on_request_completed"):
-		http_request.request_completed.connect(_on_request_completed)
+		send_button.pressed.connect("_on_send_pressed")
+
+	if http_request:
+		# Connect the request_completed signal directly with a string method name
+		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
+
+
 
 # Called by Main.gd when Talk button is pressed
 func open_chat():

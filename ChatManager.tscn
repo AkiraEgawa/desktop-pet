@@ -6,7 +6,6 @@
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 script = ExtResource("1_mgfuv")
-gemini_api_key = null
 
 [node name="ChatPanel" type="Panel" parent="."]
 offset_right = 40.0
