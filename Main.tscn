@@ -191,6 +191,5 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="ChatManager" parent="." instance=ExtResource("4_cm0pq")]
-gemini_api_key = null
 
 [connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]

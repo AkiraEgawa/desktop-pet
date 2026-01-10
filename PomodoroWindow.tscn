@@ -1,67 +1,124 @@
-[gd_scene load_steps=3 format=3 uid="uid://di28sojetr0x"]
+[gd_scene load_steps=8 format=3 uid="uid://di28sojetr0x"]
 
 [ext_resource type="Script" uid="uid://dx3xyeb1b2rm6" path="res://pomodoro_window.gd" id="1_m1vcf"]
+[ext_resource type="Texture2D" uid="uid://dxe0r2d42xbu7" path="res://shiba-pomodoro.png" id="2_chbe0"]
+[ext_resource type="FontFile" uid="uid://806w3m8g14dq" path="res://font_speak.ttf" id="3_5c4dl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1vcf"]
+bg_color = Color(0.9052291, 0.8470394, 0.7749345, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chbe0"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5c4dl"]
+bg_color = Color(0.3798609, 0.74094874, 0.5466325, 1)
+corner_radius_top_left = 48
+corner_radius_top_right = 48
+corner_radius_bottom_right = 48
+corner_radius_bottom_left = 48
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0asrv"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
 [node name="PomodoroWindow" type="Window"]
 transparent_bg = true
 oversampling_override = 1.0
 title = "Pomodoro Timer"
-size = Vector2i(300, 200)
+size = Vector2i(1280, 720)
 borderless = true
 always_on_top = true
 transparent = true
 script = ExtResource("1_m1vcf")
 
-[node name="Label" type="Label" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -81.0
-offset_top = -16.0
-offset_right = -40.0
-offset_bottom = 7.0
+[node name="BackgroundPanel" type="PanelContainer" parent="."]
+z_index = -3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1vcf")
+
+[node name="Padding" type="MarginContainer" parent="BackgroundPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 0
+
+[node name="MainLayout" type="VBoxContainer" parent="BackgroundPanel/Padding"]
+layout_mode = 2
+alignment = 1
+
+[node name="TopBar" type="HBoxContainer" parent="BackgroundPanel/Padding/MainLayout"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Focus Companion"
+
+[node name="XButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/TopBar"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_chbe0")
+text = "X"
+
+[node name="TimerLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_5c4dl")
 text = "25:00"
+horizontal_alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="BackgroundPanel/Padding/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="StartButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/ButtonRow"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_0asrv")
+text = "Start"
+
+[node name="ResetButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/ButtonRow"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_0asrv")
+text = "Start"
+
+[node name="QuoteLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_5c4dl")
+theme_override_font_sizes/font_size = 32
+text = "Text: \"Loading quote...\""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="CharImage" type="TextureRect" parent="BackgroundPanel/Padding/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("2_chbe0")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Timer" type="Timer" parent="."]
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
-z_index = -3
-offset_left = 1.0
-offset_right = 172.0
-offset_bottom = 111.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_m1vcf")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-offset_right = 76.0
-
-[node name="StartButton" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-
-[node name="ResetButton" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="WindowTitleText" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-text = "Focus"
-
-[node name="XButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "X Button"
-
-[connection signal="gui_input" from="PanelContainer" to="." method="_on_panel_container_gui_input"]
-[connection signal="pressed" from="VBoxContainer/XButton" to="." method="_on_x_button_pressed"]
+[connection signal="gui_input" from="BackgroundPanel" to="." method="_on_panel_container_gui_input"]
+[connection signal="pressed" from="BackgroundPanel/Padding/MainLayout/TopBar/XButton" to="." method="_on_x_button_pressed"]
