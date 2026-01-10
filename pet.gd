@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var pomodoro_scene = preload("res://PomodoroWindow.tscn")
+var pomodoro_instance: Window = null # Variable to hold the actual window instance
 # Use DisplayServer here to get the full USABLE screen size dynamically
 @onready var screen_size = DisplayServer.screen_get_usable_rect().size
 @onready var anim = $AnimatedSprite2D
@@ -17,11 +19,11 @@ enum PetState {
 	FALL # Fall State (Post release from Dragged State)
 }
 var current_state: PetState = PetState.IDLE # Initial pet state
-var time_left = 5.0 						# Duration before we change states
-
-func _input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		emit_signal("menu_requested", global_position)
+var time_left = 5.0 			
+#func _input_event(viewport, event, shape_idx):
+	#if event is InputEventMouseButton and 			# Duration before we change states
+ 	# event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		#emit_signal("menu_requested", global_position)
 
 # Executes once when the node and all its children enter the scene tree
 func _ready():
@@ -33,6 +35,14 @@ func _ready():
 	anim.frame_changed.connect(update_click_mask)
 	# Make sure the initial mask is set for PET
 	update_click_mask()
+	
+	# Create the instance but keep it hidden (not opened yet)
+	pomodoro_instance = pomodoro_scene.instantiate()
+	add_child(pomodoro_instance)
+	pomodoro_instance.hide() # Hide it initially
+	# Handle the XButton on the window properly
+	pomodoro_instance.close_requested.connect(func(): pomodoro_instance.hide())
+	
 
 # _process runs every VIDEO frame (e.g. 144hz if user's monitor is 144hz). 
 # This makes dragging buttery smooth and removes the "jitter/pixel border" effect.
@@ -133,17 +143,32 @@ func _physics_process(delta: float) -> void:
 
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
+		
+		# LEFT CLICK: Dragging
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				print("Clicked!")
 				current_state = PetState.DRAGGING
 				velocity = Vector2.ZERO
+				# If you need that signal for your friend's menu, emit it here:
+				emit_signal("menu_requested", global_position) 
 			else: 
 				print("Released!")
-				current_state = PetState.IDLE
-				# current_state = PetState.FALL
+				# FIX: Switch to FALL so he drops to the floor properly.
+				# If we set IDLE here, he freezes in mid-air.
+				current_state = PetState.FALL
+		# MIDDLE CLICK: Pomodoro
+		elif event.button_index == MOUSE_BUTTON_MIDDLE and event.pressed:
+			print("Middle Click detected: opening Pomodoro")
+			
+			# Center the window on the screen
+			pomodoro_instance.position = Vector2i(screen_size / 2) - (pomodoro_instance.size / 2)
+			pomodoro_instance.show()	
+			
+			if pomodoro_instance.has_method("start_pomodoro"):
+				pomodoro_instance.start_pomodoro()
 
-func update_click_mask(): 
+func update_click_mask():
 	var current_scale = anim.scale
 	# Your sprite size
 	var base_size = Vector2(48, 48)
