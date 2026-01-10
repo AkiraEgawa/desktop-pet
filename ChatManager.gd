@@ -1,5 +1,7 @@
 extends Node
 
+class_name ChatManager
+
 @export var gemini_api_key: String
 
 # Nodes will be assigned safely in _ready()
@@ -7,28 +9,36 @@ var http_request: HTTPRequest
 var chat_panel: Panel
 var user_input: LineEdit
 var chat_log: RichTextLabel
+var send_button: Button
 
 signal ai_response(text: String)
 
 func _ready():
+	# Get nodes safely
+	http_request = get_node_or_null("HTTPRequest")
 	chat_panel = get_node_or_null("ChatPanel")
 	user_input = get_node_or_null("ChatPanel/UserInput")
 	chat_log = get_node_or_null("ChatPanel/ChatLog")
-	http_request = get_node_or_null("HTTPRequest")
-	var send_button = get_node_or_null("ChatPanel/SendButton")
+	send_button = get_node_or_null("ChatPanel/SendButton")
 
+	# Hide chat panel
 	if chat_panel:
 		chat_panel.visible = false
 	else:
 		push_error("ChatPanel missing!")
 
-	if send_button:
-		send_button.pressed.connect("_on_send_pressed")
+	# Connect SendButton pressed signal
+	if send_button and has_method("_on_send_pressed"):
+		send_button.pressed.connect(Callable(self, "_on_send_pressed"))
+	else:
+		push_error("SendButton missing or _on_send_pressed not found!")
 
-	if http_request:
-		# Connect the request_completed signal directly with a string method name
-		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
-
+	# Connect HTTPRequest completed signal
+	if http_request and has_method("_on_request_completed"):
+		if not http_request.is_connected("request_completed", Callable(self, "_on_request_completed")):
+			http_request.request_completed.connect(Callable(self, "_on_request_completed"))
+	else:
+		push_error("HTTPRequest missing or _on_request_completed not found!")
 
 
 # Called by Main.gd when Talk button is pressed
