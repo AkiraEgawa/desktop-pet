@@ -13,9 +13,9 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chbe0"]
-content_margin_left = 8.0
+content_margin_left = 16.0
 content_margin_top = 8.0
-content_margin_right = 8.0
+content_margin_right = 16.0
 content_margin_bottom = 8.0
 bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 32
@@ -81,8 +81,11 @@ text = "Focus Companion"
 
 [node name="XButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/TopBar"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0asrv")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_chbe0")
 text = "X"
+icon_alignment = 1
 
 [node name="TimerLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout"]
 layout_mode = 2

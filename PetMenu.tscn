@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dm7b51pbx07u5"]
+[gd_scene load_steps=4 format=3 uid="uid://dm7b51pbx07u5"]
 
 [ext_resource type="Script" uid="uid://clny8kurfcob4" path="res://PetMenu.gd" id="1_jjrm6"]
+[ext_resource type="FontFile" uid="uid://dsj2lfsj2w6sg" path="res://font_ui.ttf" id="2_khgim"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jjrm6"]
 size = Vector2(20, 20)
@@ -12,20 +13,27 @@ script = ExtResource("1_jjrm6")
 
 [node name="TalkButton" type="Button" parent="."]
 layout_mode = 0
-offset_top = -60.0
-offset_right = 8.0
-offset_bottom = -52.0
+offset_left = -27.0
+offset_top = -70.0
+offset_right = 26.0
+offset_bottom = -31.0
+theme_override_fonts/font = ExtResource("2_khgim")
+theme_override_font_sizes/font_size = 30
+text = "Chat"
 
 [node name="Sprite2D" type="Sprite2D" parent="TalkButton"]
+visible = false
 texture = SubResource("PlaceholderTexture2D_jjrm6")
 
 [node name="InteractButton" type="Button" parent="."]
+visible = false
 layout_mode = 0
 offset_left = -60.0
 offset_right = -52.0
 offset_bottom = 8.0
 
 [node name="ScheduleButton" type="Button" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 60.0
 offset_right = 68.0
