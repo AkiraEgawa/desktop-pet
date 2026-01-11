@@ -38,3 +38,12 @@ layout_mode = 0
 offset_left = 60.0
 offset_right = 68.0
 offset_bottom = 8.0
+
+[node name="Close Button" type="Button" parent="."]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_fonts/font = ExtResource("2_khgim")
+theme_override_font_sizes/font_size = 30
+text = "Close"
