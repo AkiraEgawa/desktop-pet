@@ -16,9 +16,12 @@ var direction = 1
 var offset = 96 
 
 # --- STATE MACHINE ---
-enum PetState { IDLE, WALK, DRAGGING, FALL }
+enum PetState { IDLE, WALK, DRAGGING, FALL, HOLD_SIGN }
 var current_state: PetState = PetState.IDLE 
 var time_left = 5.0 
+
+# Variable to track the 5-second hold
+var sign_timer = 0.0
 
 # --- SIGNALS ---
 signal menu_requested(global_position) 
@@ -26,14 +29,18 @@ signal menu_requested(global_position)
 func _ready():
 	get_tree().get_root().set_transparent_background(true)
 	
-	# Optimize: Update mask only on frame change
 	anim.frame_changed.connect(update_click_mask)
 	update_click_mask()
 	
-	# Instantiate Pomodoro Window (Hidden by default)
 	pomodoro_instance = pomodoro_scene.instantiate()
 	add_child(pomodoro_instance)
 	pomodoro_instance.hide() 
+	
+	# --- NEW CODE: CONNECT THE SIGNAL ---
+	# This listens to the Pomodoro window. When "time_milestone" fires, 
+	# it runs the 'show_sign' function below.
+	if pomodoro_instance.has_signal("time_milestone"):
+		pomodoro_instance.time_milestone.connect(show_sign)
 
 func _process(delta: float) -> void:
 	update_click_mask() # Update mask every frame for smooth dragging
@@ -46,6 +53,19 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if current_state == PetState.DRAGGING:
 		return 
+	
+	# Sign Holding
+	if current_state == PetState.HOLD_SIGN:
+		# Count down
+		sign_timer -= delta
+		if sign_timer <= 0:
+			# Time's up! Go back to idle
+			current_state = PetState.IDLE
+		
+		# While holding sign, DO NOT run the rest of movement logic
+		# But we still call move_and_slide so he stays on the floor
+		move_and_slide()
+		return
 
 	# --- FLOOR CALCULATION ---
 	var screen_bottom = DisplayServer.screen_get_usable_rect().end.y
@@ -139,13 +159,34 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 			pomodoro_instance.show()	
 			
 			# Call the start function if it exists
-			if pomodoro_instance.has_method("start_pomodoro"):
-				pomodoro_instance.start_pomodoro()
+			#if pomodoro_instance.has_method("start_pomodoro"):
+				#pomodoro_instance.start_pomodoro()
 		
 		# RIGHT CLICK: Open Pet Menu
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			print("Right Click: Emitting menu_requested")
+			speed = 0
+			velocity = Vector2.ZERO # stop motion
 			emit_signal("menu_requested", global_position)
+
+func show_sign(minutes_left: int):
+	# 1. Determine which animation to play
+	var anim_name = ""
+	match minutes_left:
+		25: anim_name = "sign_25"
+		20: anim_name = "sign_20"
+		15: anim_name = "sign_15"
+		10: anim_name = "sign_10"
+		5:  anim_name = "sign_5"
+		0:  anim_name = "sign_0"
+	
+	# 2. If valid, enter the state
+	if anim_name != "":
+		print("Pet showing sign for: ", minutes_left)
+		current_state = PetState.HOLD_SIGN
+		velocity = Vector2.ZERO # Stop moving immediately
+		anim.play(anim_name)
+		sign_timer = 5.0 # Hold for 5 seconds
 
 func update_click_mask():
 	# Only mask around the pet

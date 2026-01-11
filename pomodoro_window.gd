@@ -1,5 +1,7 @@
 extends Window
 
+signal time_milestone(minutes_left)
+
 # Old reference (kept for safety, but we use timer_label now)
 @onready var label = $BackgroundPanel/Padding/MainLayout/TimerLabel 
 
@@ -65,19 +67,29 @@ func start_pomodoro():
 	_set_timer_color(Color.GREEN)
 	
 	update_label()
+	
+	# Show the starting sign (25) immediately
+	emit_signal("time_milestone", minutes)
+	
 	timer.start()
 
 func _on_timer_tick():
-	if seconds > 0:
-		seconds -= 1
-	else:
-		if minutes > 0:
-			minutes -= 1
-			seconds = 59
-		else: 
-			# Time is up
-			_handle_timer_complete()
-			return # Exit function
+	# --- TEST MODE: SPEED RUN ---
+	# Instead of counting down seconds, we force seconds to 0
+	# and subtract a whole minute every time the timer ticks (every 1 real second).
+	
+	seconds = 0
+	if minutes > 0:
+		minutes -= 1
+		
+		# Check our milestones (This logic stays the same!)
+		if minutes in [25, 20, 15, 10, 5]:
+			emit_signal("time_milestone", minutes)
+			
+	else: 
+		# Time is up (reached 0)
+		_handle_timer_complete()
+		return 
 			
 	update_label()
 
@@ -94,6 +106,9 @@ func _handle_timer_complete():
 		pick_random_quote()
 	else:
 		# Work finished -> Start Break
+		# Tell the pet the work timer hit 0!
+		emit_signal("time_milestone", 0)
+		
 		is_break_mode = true
 		minutes = BREAK_MINUTES
 		timer_label.text = "Break Time!"
