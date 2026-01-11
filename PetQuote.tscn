@@ -138,6 +138,7 @@ text = "25:00"
 [node name="Timer" type="Timer" parent="PomodoroWindow"]
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="MenuContainer" type="Control" parent="UI"]
 layout_mode = 3
