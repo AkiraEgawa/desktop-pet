@@ -1,7 +1,7 @@
 extends Node
 class_name ChatManager
 
-@export var proxy_url: String = "http://127.0.0.1:3000/gemini"
+@export var proxy_url: String = "http://127.0.0.1:3000/gemini"  # your local Node proxy
 
 # Nodes
 var http_request: HTTPRequest
@@ -13,7 +13,7 @@ var send_button: Button
 signal ai_response(text: String)
 
 func _ready():
-	# Get nodes
+	# Get nodes safely
 	http_request = get_node_or_null("HTTPRequest")
 	chat_panel = get_node_or_null("ChatPanel")
 	user_input = get_node_or_null("ChatPanel/UserInput")
@@ -23,27 +23,28 @@ func _ready():
 	if not chat_panel:
 		push_error("ChatPanel missing!")
 		return
-	chat_panel.hide()
+	chat_panel.hide() # hide at start
 
-	# Connect send button
+	# Connect button pressed
 	if send_button:
 		send_button.pressed.connect(Callable(self, "_on_send_pressed"))
 	else:
 		push_error("SendButton missing!")
 
-	# Connect Enter key
+	# Connect Enter key (LineEdit)
 	if user_input:
 		user_input.text_submitted.connect(Callable(self, "_on_send_pressed"))
 	else:
 		push_error("UserInput LineEdit missing!")
 
-	# Connect HTTPRequest
+	# Connect HTTPRequest completed signal
 	if http_request:
 		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
 	else:
 		push_error("HTTPRequest missing!")
 
-# Open chat panel
+
+# Called by Main.gd when "Talk" button is pressed
 func open_chat():
 	if chat_panel and user_input:
 		chat_panel.popup_centered()
@@ -53,17 +54,18 @@ func open_chat():
 	else:
 		print("Cannot open chat: chat_panel or user_input is null")
 
-# Called on SendButton press or Enter key
+
+# Triggered by button or Enter key
 func _on_send_pressed(submitted_text: String = ""):
-	var prompt = submitted_text.strip_edges()
-	if prompt == "" and user_input:
-		prompt = user_input.text.strip_edges()
+	var prompt: String = submitted_text.strip_edges()
+	if prompt == "":
+		# If triggered by button press, get text from input
+		if user_input:
+			prompt = user_input.text.strip_edges()
 	if prompt == "":
 		return
 
-	send_prompt_to_proxy(prompt)
-
-	# Show user message
+	# Show user message in chat log
 	if chat_log:
 		chat_log.append_text("[You]: %s\n" % prompt)
 
@@ -71,24 +73,21 @@ func _on_send_pressed(submitted_text: String = ""):
 	if user_input:
 		user_input.text = ""
 
-# Send prompt to Node.js proxy
-func send_prompt_to_proxy(prompt: String) -> void:
-	if not http_request:
+	# Send prompt to Node proxy
+	if http_request:
+		var body = {"prompt": prompt}
+		var json_str = JSON.stringify(body)
+		var err = http_request.request(
+			proxy_url,
+			[],                     # headers (none needed, proxy accepts JSON)
+			HTTPClient.METHOD_POST, # HTTP method
+			json_str                 # body as string
+		)
+		if err != OK:
+			push_error("Failed to send HTTP request: %d" % err)
+	else:
 		push_error("HTTPRequest node missing!")
-		return
 
-	var json_body = {"prompt": prompt}
-	var body_str = JSON.stringify(json_body)
-
-	var err = http_request.request(
-		proxy_url,
-		[],                     # headers can be empty
-		HTTPClient.METHOD_POST,
-		body_str
-	)
-
-	if err != OK:
-		push_error("Failed to send HTTP request: %d" % err)
 
 # Callback when proxy responds
 func _on_request_completed(result: int, response_code: int, headers: Array, body: PackedByteArray):
@@ -107,8 +106,8 @@ func _on_request_completed(result: int, response_code: int, headers: Array, body
 		return
 
 	var data = parse_result.result
-	if data.has("candidates") and data.candidates.size() > 0:
-		var ai_text = data.candidates[0].content
+	if data.has("text"):
+		var ai_text = str(data.text)
 		emit_signal("ai_response", ai_text)
 		chat_log.append_text("[Pet]: %s\n" % ai_text)
 	else:
