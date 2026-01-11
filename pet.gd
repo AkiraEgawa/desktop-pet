@@ -185,6 +185,9 @@ func show_sign(minutes_left: int):
 		print("Pet showing sign for: ", minutes_left)
 		current_state = PetState.HOLD_SIGN
 		velocity = Vector2.ZERO # Stop moving immediately
+		
+		anim.flip_h = false
+		
 		anim.play(anim_name)
 		sign_timer = 5.0 # Hold for 5 seconds
 

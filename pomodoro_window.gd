@@ -140,7 +140,6 @@ func _on_x_button_pressed() -> void:
 	hide() # Hides the window
 	is_running = false
 	# Do not pause the timer, timer should run in background
-
 func _on_start_pressed():
 	if is_running:
 		# PAUSE Logic
@@ -154,6 +153,10 @@ func _on_start_pressed():
 		timer.start()
 		start_button.text = "Pause"
 		_set_timer_color(Color.GREEN)
+		
+		# This ensures we see "25" right when we click Start
+		if minutes in [25, 20, 15, 10, 5]:
+			emit_signal("time_milestone", minutes)
 
 func _on_reset_pressed():
 	is_running = false

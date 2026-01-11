@@ -253,7 +253,7 @@ texture_repeat = 1
 position = Vector2(-1, -10)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_wkp8b")
-animation = &"sign_25"
+animation = &"sign_5"
 speed_scale = 0.4
 
 [node name="UI" type="CanvasLayer" parent="."]
