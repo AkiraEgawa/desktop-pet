@@ -10,11 +10,14 @@ script = ExtResource("1_mgfuv")
 
 [node name="ChatPanel" type="Window" parent="."]
 oversampling_override = 1.0
-size = Vector2i(300, 200)
+size = Vector2i(800, 400)
 
 [node name="UserInput" type="LineEdit" parent="ChatPanel"]
+custom_minimum_size = Vector2(600, 70)
 offset_right = 68.5625
 offset_bottom = 31.0
+placeholder_text = "What do you want to ask Shiba-san?"
+caret_blink = true
 
 [node name="SendButton" type="Button" parent="ChatPanel"]
 anchors_preset = 3
@@ -33,6 +36,7 @@ grow_vertical = 0
 texture = ExtResource("2_w6xaa")
 
 [node name="ChatLog" type="RichTextLabel" parent="ChatPanel"]
+custom_minimum_size = Vector2(300, 100)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
