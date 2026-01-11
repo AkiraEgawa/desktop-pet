@@ -1,5 +1,4 @@
 [gd_scene load_steps=23 format=3 uid="uid://n1dbxval3i8"]
-
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="2_uu6xs"]
@@ -104,7 +103,6 @@ region = Rect2(48, 0, 48, 48)
 atlas = ExtResource("2_uu6xs")
 region = Rect2(96, 0, 48, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_wkp8b"]
 atlas = ExtResource("5_fos0i")
 region = Rect2(288, 144, 48, 48)
 
@@ -173,6 +171,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_wkp8b")
 }],
 "loop": true,
+"name": &"petting",
 "name": &"sign_0",
 "speed": 5.0
 }, {
@@ -253,6 +252,7 @@ texture_repeat = 1
 position = Vector2(-1, -10)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_wkp8b")
+animation = &"petting"
 animation = &"sign_5"
 speed_scale = 0.4
 
