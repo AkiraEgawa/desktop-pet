@@ -143,6 +143,8 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 		# LEFT CLICK: Dragging
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
+				if current_state == PetState.HOLD_SIGN:
+					return
 				print("Clicked!")
 				current_state = PetState.DRAGGING
 				velocity = Vector2.ZERO
