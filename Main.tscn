@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://n1dbxval3i8"]
+[gd_scene load_steps=16 format=3 uid="uid://n1dbxval3i8"]
 
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
@@ -76,8 +76,6 @@ func close_menu():
 		child.queue_free()
 	menu_open = false
 "
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_glv2v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
 size = Vector2(115, 144)
@@ -160,12 +158,6 @@ animations = [{
 script = SubResource("GDScript_glv2v")
 pet_menu_scene = ExtResource("1_r0du0")
 chat_manager_scene = ExtResource("4_cm0pq")
-
-[node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(0, 1136)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-shape = SubResource("WorldBoundaryShape2D_glv2v")
 
 [node name="Pet" type="CharacterBody2D" parent="."]
 input_pickable = true

@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://di28sojetr0x"]
+[gd_scene load_steps=9 format=3 uid="uid://di28sojetr0x"]
 
 [ext_resource type="Script" uid="uid://dx3xyeb1b2rm6" path="res://pomodoro_window.gd" id="1_m1vcf"]
+[ext_resource type="FontFile" uid="uid://dsj2lfsj2w6sg" path="res://font_ui.ttf" id="2_0asrv"]
 [ext_resource type="Texture2D" uid="uid://dxe0r2d42xbu7" path="res://shiba-pomodoro.png" id="2_chbe0"]
 [ext_resource type="FontFile" uid="uid://806w3m8g14dq" path="res://font_speak.ttf" id="3_5c4dl"]
 
@@ -35,6 +36,10 @@ corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
+expand_margin_left = 20.0
+expand_margin_top = 10.0
+expand_margin_right = 20.0
+expand_margin_bottom = 10.0
 
 [node name="PomodoroWindow" type="Window"]
 transparent_bg = true
@@ -88,16 +93,21 @@ horizontal_alignment = 1
 
 [node name="ButtonRow" type="HBoxContainer" parent="BackgroundPanel/Padding/MainLayout"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 60
 alignment = 1
 
 [node name="StartButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/ButtonRow"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0asrv")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_0asrv")
 text = "Start"
+icon_alignment = 1
 
 [node name="ResetButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/ButtonRow"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0asrv")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_0asrv")
 text = "Start"
 
@@ -105,7 +115,7 @@ text = "Start"
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_5c4dl")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 80
 text = "Text: \"Loading quote...\""
 horizontal_alignment = 1
 vertical_alignment = 1
