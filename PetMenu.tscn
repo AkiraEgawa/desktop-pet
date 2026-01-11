@@ -12,20 +12,25 @@ script = ExtResource("1_jjrm6")
 
 [node name="TalkButton" type="Button" parent="."]
 layout_mode = 0
+offset_left = -27.0
 offset_top = -60.0
-offset_right = 8.0
-offset_bottom = -52.0
+offset_right = 17.0
+offset_bottom = -29.0
+text = "Chat"
 
 [node name="Sprite2D" type="Sprite2D" parent="TalkButton"]
+visible = false
 texture = SubResource("PlaceholderTexture2D_jjrm6")
 
 [node name="InteractButton" type="Button" parent="."]
+visible = false
 layout_mode = 0
 offset_left = -60.0
 offset_right = -52.0
 offset_bottom = 8.0
 
 [node name="ScheduleButton" type="Button" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 60.0
 offset_right = 68.0
