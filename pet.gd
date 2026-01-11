@@ -53,24 +53,28 @@ func _physics_process(delta: float) -> void:
 	var base_size = Vector2(48, 48)
 	var effective_size = base_size * current_scale
 	
-	# Reduced sink so he stands ON the taskbar, not IN it
-	var vertical_sink = 0.0 
-	var floor_limit = screen_bottom - (effective_size.y / 2) + vertical_sink
+	# The exact Y position where the feet touch the bottom
+	var floor_limit = screen_bottom - (effective_size.y / 2)
 
 	# --- GRAVITY & LANDING LOGIC ---
-	if global_position.y < floor_limit:
-		# We are in the air
+	
+	# We define a tiny "snap margin" (e.g., 2 pixels).
+	# If the pet is within 2 pixels of the floor, we consider him "Landed".
+	if global_position.y < floor_limit - 2.0:
+		# AIRBORNE LOGIC
 		velocity.y += gravity * delta
 		
-		# Only play fall animation if we are significantly falling
-		if velocity.y > 50 and current_state != PetState.FALL:
+		# If we are in the air, we are falling
+		if current_state != PetState.FALL:
 			current_state = PetState.FALL
+			
 	else:
-		# We hit the floor (or went past it)
+		# GROUNDED LOGIC
+		# Snap exactly to the floor line
 		global_position.y = floor_limit
 		velocity.y = 0
 		
-		# If we were falling, land now
+		# If we were falling, switch to Idle immediately
 		if current_state == PetState.FALL:
 			current_state = PetState.IDLE
 
