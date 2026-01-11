@@ -46,7 +46,7 @@ func _ready():
 		pomodoro_instance.time_milestone.connect(show_sign)
 
 func _process(delta: float) -> void:
-	#update_click_mask() # Update mask every frame for smooth dragging
+	update_click_mask() # Update mask every frame for smooth dragging
 	
 	if current_state == PetState.PETTING and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var current_mouse_pos = get_global_mouse_position()

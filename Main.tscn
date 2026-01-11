@@ -1,4 +1,5 @@
 [gd_scene load_steps=23 format=3 uid="uid://n1dbxval3i8"]
+
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="2_uu6xs"]
@@ -23,9 +24,8 @@ func _ready():
 	get_tree().get_root().set_transparent_background(true)
 	pet.menu_requested.connect(show_pet_menu)
 	# instantiate ChatManager scene
-	chat_manager = chat_manager_scene.instantiate() as ChatManager  # chat_manager_scene is a PackedScene
+	chat_manager = chat_manager_scene.instantiate() as ChatManager
 	add_child(chat_manager)
-	
 
 func show_pet_menu(pet_pos: Vector2):
 	# remove previous menu
@@ -58,13 +58,10 @@ func show_pet_menu(pet_pos: Vector2):
 		close_menu()	
 	)
 
-
-
 func on_talk():
 	if chat_manager:
 		chat_manager.open_chat()
-		# You can optionally set a screen position here if you want it somewhere specific
-		chat_manager.chat_panel.position = Vector2(400, 300)  # Center-ish
+		chat_manager.chat_panel.position = Vector2(400, 300)
 	else:
 		print(\"No chat_manager\")
 
@@ -103,6 +100,7 @@ region = Rect2(48, 0, 48, 48)
 atlas = ExtResource("2_uu6xs")
 region = Rect2(96, 0, 48, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_wkp8b"]
 atlas = ExtResource("5_fos0i")
 region = Rect2(288, 144, 48, 48)
 
@@ -168,10 +166,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_wkp8b")
+"texture": SubResource("AtlasTexture_uu6xs")
 }],
 "loop": true,
 "name": &"petting",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wkp8b")
+}],
+"loop": true,
 "name": &"sign_0",
 "speed": 5.0
 }, {
@@ -253,7 +258,6 @@ position = Vector2(-1, -10)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_wkp8b")
 animation = &"petting"
-animation = &"sign_5"
 speed_scale = 0.4
 
 [node name="UI" type="CanvasLayer" parent="."]
