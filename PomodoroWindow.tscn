@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://di28sojetr0x"]
+[gd_scene load_steps=8 format=3 uid="uid://di28sojetr0x"]
 
 [ext_resource type="Script" uid="uid://dx3xyeb1b2rm6" path="res://pomodoro_window.gd" id="1_m1vcf"]
 [ext_resource type="FontFile" uid="uid://dsj2lfsj2w6sg" path="res://font_ui.ttf" id="2_0asrv"]
-[ext_resource type="Texture2D" uid="uid://dxe0r2d42xbu7" path="res://shiba-pomodoro.png" id="2_chbe0"]
-[ext_resource type="FontFile" uid="uid://806w3m8g14dq" path="res://font_speak.ttf" id="3_5c4dl"]
+[ext_resource type="Texture2D" uid="uid://6ubwt81cv047" path="res://BIGSHIBAFACE.png" id="3_5c4dl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1vcf"]
 bg_color = Color(0.9052291, 0.8470394, 0.7749345, 1)
@@ -74,11 +73,6 @@ alignment = 1
 [node name="TopBar" type="HBoxContainer" parent="BackgroundPanel/Padding/MainLayout"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout/TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Focus Companion"
-
 [node name="XButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/TopBar"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_0asrv")
@@ -108,6 +102,7 @@ text = "Start"
 icon_alignment = 1
 
 [node name="ResetButton" type="Button" parent="BackgroundPanel/Padding/MainLayout/ButtonRow"]
+visible = false
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_0asrv")
 theme_override_font_sizes/font_size = 32
@@ -117,7 +112,7 @@ text = "Start"
 [node name="QuoteLabel" type="Label" parent="BackgroundPanel/Padding/MainLayout"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("3_5c4dl")
+theme_override_fonts/font = ExtResource("2_0asrv")
 theme_override_font_sizes/font_size = 80
 text = "Text: \"Loading quote...\""
 horizontal_alignment = 1
@@ -127,7 +122,7 @@ autowrap_mode = 2
 [node name="CharImage" type="TextureRect" parent="BackgroundPanel/Padding/MainLayout"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("2_chbe0")
+texture = ExtResource("3_5c4dl")
 expand_mode = 1
 stretch_mode = 5
 
