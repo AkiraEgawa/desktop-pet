@@ -130,6 +130,11 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 			# Call the start function if it exists
 			if pomodoro_instance.has_method("start_pomodoro"):
 				pomodoro_instance.start_pomodoro()
+		
+		# RIGHT CLICK: Open Pet Menu
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			print("Right Click: Emitting menu_requested")
+			emit_signal("menu_requested", global_position)
 
 func update_click_mask():
 	# Only mask around the pet
