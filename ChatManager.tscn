@@ -49,3 +49,12 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
+
+[node name="CloseButton" type="Button" parent="ChatPanel"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -17.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "x"

@@ -24,6 +24,11 @@ func _ready():
 	user_input = get_node_or_null("ChatPanel/UserInput")
 	chat_log = get_node_or_null("ChatPanel/ChatLog")
 	send_button = get_node_or_null("ChatPanel/SendButton")
+	# Connect Close Button if it exists
+	var close_button: Button = chat_panel.get_node_or_null("CloseButton")
+	if close_button:
+		close_button.pressed.connect(Callable(self, "_on_close_pressed"))
+
 
 	if chat_log:
 		scroll_container = chat_log.get_parent() as ScrollContainer
@@ -52,6 +57,10 @@ func _ready():
 		http_request.request_completed.connect(Callable(self, "_on_request_completed"))
 	else:
 		push_error("HTTPRequest missing!")
+
+func _on_close_pressed():
+	if chat_panel:
+		chat_panel.hide()
 
 func _process(delta: float) -> void:
 	# Smooth scroll
