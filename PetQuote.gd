@@ -33,6 +33,9 @@ func _ready():
 	speech_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	speech_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	speech_label.clip_text = false
+	speech_label.z_index = 100
+	speech_label.z_as_relative = false
+
 
 	quote_timer.timeout.connect(on_quote_timer_timeout)
 	quote_timer.one_shot = false

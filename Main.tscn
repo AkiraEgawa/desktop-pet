@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="2_uu6xs"]
-[ext_resource type="PackedScene" uid="uid://nvem4airnve7" path="res://ChatManager.tscn" id="4_cm0pq"]
+[ext_resource type="PackedScene" path="res://ChatManager.tscn" id="4_cm0pq"]
 
 [sub_resource type="GDScript" id="GDScript_glv2v"]
 script/source = "extends Node2D
@@ -194,9 +194,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="ChatManager" parent="." instance=ExtResource("4_cm0pq")]
-
 light_mask = 2
 visibility_layer = 2
-gemini_api_key = null
 
 [connection signal="input_event" from="Pet" to="Pet" method="_on_input_event"]

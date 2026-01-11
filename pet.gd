@@ -46,7 +46,6 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if current_state == PetState.DRAGGING:
 		return 
-	
 	# --- FLOOR CALCULATION ---
 	var screen_bottom = DisplayServer.screen_get_usable_rect().end.y
 	var current_scale = anim.scale
@@ -54,17 +53,17 @@ func _physics_process(delta: float) -> void:
 	var effective_size = base_size * current_scale
 	var vertical_sink = 10.0
 	var floor_limit = screen_bottom - (effective_size.y / 2) + vertical_sink
-
 	# --- GRAVITY ---
-	if not is_on_floor():
+	if global_position.y < floor_limit:
 		velocity.y += gravity * delta
-		if velocity.y > 0:
+		# Only switch to FALL if we are actually moving down and not already there
+		if velocity.y > 0 and current_state != PetState.FALL:
 			current_state = PetState.FALL
-	
 	# --- FLOOR COLLISION ---
 	if global_position.y >= floor_limit: 
 		global_position.y = floor_limit 
 		velocity.y = 0 
+		# Land the pet
 		if current_state == PetState.FALL:
 			current_state = PetState.IDLE
 	
