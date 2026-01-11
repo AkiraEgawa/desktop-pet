@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://n1dbxval3i8"]
+[gd_scene load_steps=17 format=3 uid="uid://n1dbxval3i8"]
 
 [ext_resource type="PackedScene" uid="uid://dm7b51pbx07u5" path="res://PetMenu.tscn" id="1_r0du0"]
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="1_uu6xs"]
@@ -96,6 +96,10 @@ region = Rect2(48, 0, 48, 48)
 atlas = ExtResource("2_uu6xs")
 region = Rect2(96, 0, 48, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_wkp8b"]
+atlas = ExtResource("2_uu6xs")
+region = Rect2(240, 0, 48, 48)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_fos0i"]
 atlas = ExtResource("2_uu6xs")
 region = Rect2(0, 48, 48, 48)
@@ -138,6 +142,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_wkp8b")
+}],
+"loop": true,
+"name": &"petting",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_fos0i")
 }, {
 "duration": 1.0,
@@ -173,7 +185,7 @@ texture_repeat = 1
 position = Vector2(-1, -10)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_wkp8b")
-animation = &"fall"
+animation = &"petting"
 speed_scale = 0.4
 
 [node name="UI" type="CanvasLayer" parent="."]

@@ -14,9 +14,12 @@ var pomodoro_instance: Window = null
 var speed = 200 
 var direction = 1 
 var offset = 96 
+var petting_duration = 1.5
+var drag_start_position = Vector2.ZERO
+var drag_threshold = 10.0
 
 # --- STATE MACHINE ---
-enum PetState { IDLE, WALK, DRAGGING, FALL }
+enum PetState { IDLE, WALK, DRAGGING, FALL, PETTING }
 var current_state: PetState = PetState.IDLE 
 var time_left = 5.0 
 
@@ -36,8 +39,13 @@ func _ready():
 	pomodoro_instance.hide() 
 
 func _process(delta: float) -> void:
-	update_click_mask() # Update mask every frame for smooth dragging
+	#update_click_mask() # Update mask every frame for smooth dragging
 	
+	if current_state == PetState.PETTING and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		var current_mouse_pos = get_global_mouse_position()
+		# If we moved further than the threshold (10 pixels), start dragging
+		if current_mouse_pos.distance_to(drag_start_position) > drag_threshold:
+			current_state = PetState.DRAGGING
 	# Visual Dragging Logic
 	if current_state == PetState.DRAGGING: 
 		global_position = get_global_mouse_position()
@@ -79,7 +87,14 @@ func _physics_process(delta: float) -> void:
 			current_state = PetState.IDLE
 
 	# --- AI DECISION MAKING (Timer) ---
-	if current_state == PetState.IDLE or current_state == PetState.WALK:
+	if current_state == PetState.PETTING:
+		velocity = Vector2.ZERO
+		anim.play("petting") # Ensure you have an animation named "pet"
+		time_left -= delta
+		if time_left <= 0:
+			current_state = PetState.IDLE
+			time_left = randf_range(2.0, 5.0)
+	elif current_state == PetState.IDLE or current_state == PetState.WALK:
 		time_left -= delta
 		if time_left <= 0:
 			time_left = randf_range(2.0, 5.0) 
@@ -89,6 +104,8 @@ func _physics_process(delta: float) -> void:
 			else: 
 				current_state = PetState.WALK
 				direction = 1 if randf() > 0.5 else -1
+	
+	
 		
 	# --- MOVEMENT APPLIER ---
 	if current_state == PetState.WALK:
@@ -103,6 +120,10 @@ func _physics_process(delta: float) -> void:
 	elif current_state == PetState.FALL: 
 		anim.play("fall")
 		velocity.x = 0 
+		
+	elif current_state == PetState.PETTING:
+		velocity.x = 0
+	
 		
 	# --- SCREEN BOUNDS ---
 	if (global_position.x > screen_size.x - offset):
@@ -120,15 +141,24 @@ func _physics_process(delta: float) -> void:
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		
-		# LEFT CLICK: Dragging
+		# LEFT CLICK
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				print("Clicked!")
-				current_state = PetState.DRAGGING
+				# 1. Default to PETTING immediately
+				current_state = PetState.PETTING
+				time_left = petting_duration
 				velocity = Vector2.ZERO
-			else: 
-				print("Released!")
-				current_state = PetState.FALL
+				
+				# 2. Record where we clicked so we can calculate drag later
+				drag_start_position = get_global_mouse_position()
+				
+			else:
+				# 3. ON RELEASE
+				# If we managed to switch to dragging, then Fall.
+				if current_state == PetState.DRAGGING:
+					current_state = PetState.FALL
+					
+		# LEFT CLICK: Dragging
 
 		# MIDDLE CLICK: Pomodoro
 		elif event.button_index == MOUSE_BUTTON_MIDDLE and event.pressed:

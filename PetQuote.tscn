@@ -1,10 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://clqutqc0mte6e"]
+[gd_scene load_steps=16 format=3 uid="uid://clqutqc0mte6e"]
 
 [ext_resource type="Script" uid="uid://c1gevb176dk2g" path="res://pet.gd" id="2_eiy3p"]
 [ext_resource type="Script" uid="uid://wt7a7pr1l7vb" path="res://PetQuote.gd" id="2_gqrrh"]
 [ext_resource type="Texture2D" uid="uid://oeqntvdj1ttg" path="res://shiba-san-sprite-sheet.png" id="3_yohrq"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_glv2v"]
+[ext_resource type="FontFile" uid="uid://dsj2lfsj2w6sg" path="res://font_ui.ttf" id="4_eiy3p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
 size = Vector2(115, 144)
@@ -83,14 +82,23 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqrrh"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
 [node name="PetQuote" type="Node2D"]
 script = ExtResource("2_gqrrh")
-
-[node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(0, 1136)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-shape = SubResource("WorldBoundaryShape2D_glv2v")
 
 [node name="Pet" type="CharacterBody2D" parent="."]
 input_pickable = true
@@ -153,6 +161,10 @@ offset_top = -190.0
 offset_right = 128.0
 offset_bottom = -162.0
 size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_eiy3p")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_gqrrh")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
